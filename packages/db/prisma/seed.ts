@@ -2,21 +2,21 @@ import { prismaClient } from '../src/index';
 
 // run bun ./prisma/seed.ts
 
+const USER_ID = "5";
 
 async function seed() {
     await prismaClient.user.create({
         data: {
-            id: "2",
+            id: USER_ID,
             email: "test@test.com"
             
         }
     })
 
-    await prismaClient.website.create({
+    const website = await prismaClient.website.create({
         data: {
-            id: "2",
             url: "https://test.com",
-            userId: "2"
+            userId: USER_ID
         }
     })
 
@@ -31,7 +31,7 @@ async function seed() {
     await prismaClient.websiteTick.create({
         data: {
            
-            websiteId: "1",
+            websiteId: website.id,
             status: "Good",
             createdAt: new Date(),
             latency: 100,
@@ -42,7 +42,7 @@ async function seed() {
     await prismaClient.websiteTick.create({
         data: {
           
-            websiteId: "1",
+            websiteId: website.id,
             status: "Good",
             createdAt: new Date(Date.now() - 1000*60*10),
             latency: 100,
@@ -53,8 +53,8 @@ async function seed() {
     await prismaClient.websiteTick.create({
         data: {
            
-            websiteId: "1",
-            status: "Good",
+            websiteId: website.id,
+            status: "Bad",
             createdAt: new Date(Date.now() - 1000*60*20),
             latency: 100,
             validatorId: validator.id
