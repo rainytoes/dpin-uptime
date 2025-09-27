@@ -1,135 +1,210 @@
-# Turborepo starter
+# DPin Uptime Monitor
 
-This Turborepo starter is maintained by the Turborepo core team.
+A decentralized uptime monitoring system that leverages a network of distributed validators to monitor website availability and performance. Built on Solana blockchain for trustless validator authentication and payments.
 
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## 🏗️ Architecture
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │      API        │    │   Database      │
+│   (Next.js)     │◄──►│   (Express)     │◄──►│  (PostgreSQL)   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                       ┌─────────────────┐
+                       │      Hub        │
+                       │  (WebSocket)    │
+                       └─────────────────┘
+                                │
+                                ▼
+                    ┌─────────────────────────┐
+                    │     Validators          │
+                    │  (Distributed Nodes)    │
+                    └─────────────────────────┘
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 🚀 Features
+
+- **Decentralized Monitoring**: Network of distributed validators perform website checks
+- **Real-time Dashboard**: Live uptime statistics and historical data visualization
+- **Blockchain Authentication**: Solana-based cryptographic validator verification
+- **Automated Payments**: Validators earn rewards for monitoring services
+- **Multi-location Checks**: Global validator network for comprehensive monitoring
+- **WebSocket Communication**: Real-time coordination between hub and validators
+- **User Authentication**: Secure user management with Clerk
+- **Responsive UI**: Modern, dark-mode enabled interface
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **Clerk** - Authentication and user management
+- **Lucide React** - Icon library
+- **Axios** - HTTP client
+
+### Backend
+- **Express.js** - REST API server
+- **Bun** - JavaScript runtime and package manager
+- **WebSocket** - Real-time communication
+- **JWT** - Token-based authentication
+- **CORS** - Cross-origin resource sharing
+
+### Database
+- **PostgreSQL** - Primary database
+- **Prisma** - ORM and database toolkit
+- **Database Migrations** - Version-controlled schema changes
+
+### Blockchain
+- **Solana Web3.js** - Blockchain interaction
+- **TweetNaCl** - Cryptographic signing and verification
+- **Keypair Management** - Validator identity and authentication
+
+### DevOps
+- **Turborepo** - Monorepo management
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **TypeScript** - Type checking across all packages
+
+## 📦 Project Structure
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+├── apps/
+│   ├── frontend/          # Next.js user dashboard
+│   ├── api/              # Express.js REST API
+│   ├── hub/              # WebSocket coordination server
+│   └── validator/        # Distributed monitoring nodes
+├── packages/
+│   ├── db/               # Prisma database package
+│   ├── common/           # Shared TypeScript types
+│   ├── ui/               # Shared React components
+│   ├── eslint-config/    # ESLint configurations
+│   └── typescript-config/ # TypeScript configurations
 ```
 
-### Develop
+## 🚦 Getting Started
 
-To develop all apps and packages, run the following command:
+### Prerequisites
+- Node.js 18+
+- Bun 1.2.7+
+- PostgreSQL database
+- Solana wallet for validators
 
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd dpin-uptime
+   ```
+
+2. **Install dependencies**
+   ```bash
+   bun install
+   ```
+
+3. **Set up the database**
+   ```bash
+   cd packages/db
+   bunx prisma migrate dev
+   bunx prisma db seed
+   ```
+
+4. **Configure environment variables**
+   ```bash
+   # Create .env files in respective apps
+   # Frontend: Clerk keys, API URL
+   # API: Database URL, JWT keys
+   # Hub: Database URL
+   # Validator: Private key, Hub URL
+   ```
+
+### Running the Application
+
+1. **Start all services**
+   ```bash
+   bun run dev
+   ```
+
+2. **Or run individual services**
+   ```bash
+   # Frontend (port 3000)
+   cd apps/frontend && bun run dev
+   
+   # API (port 8080)
+   cd apps/api && bun run index.ts
+   
+   # Hub (port 8081)
+   cd apps/hub && bun run index.ts
+   
+   # Validator
+   cd apps/validator && PRIVATE_KEY="[...]" bun run index.ts
+   ```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+**Frontend (.env.local)**
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
 ```
-cd my-turborepo
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+**API (.env)**
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/uptime_db
+JWT_PUBLIC_KEY=-----BEGIN PUBLIC KEY-----...
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+**Validator (.env)**
+```env
+PRIVATE_KEY=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64]
 ```
 
-### Remote Caching
+## 🏃‍♂️ How It Works
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+1. **User Registration**: Users sign up through Clerk authentication
+2. **Website Addition**: Users add websites to monitor via the dashboard
+3. **Validator Network**: Validators connect to the hub via WebSocket
+4. **Task Distribution**: Hub distributes monitoring tasks to available validators
+5. **Website Checking**: Validators perform HTTP checks and measure latency
+6. **Result Verification**: Results are cryptographically signed and verified
+7. **Data Storage**: Monitoring results stored in PostgreSQL database
+8. **Payment Processing**: Validators earn rewards for successful monitoring
+9. **Dashboard Updates**: Real-time updates displayed to users
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## 🔐 Security Features
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+- **Cryptographic Signatures**: All validator communications are signed
+- **Message Verification**: Hub verifies all incoming validator messages
+- **JWT Authentication**: Secure API access with JSON Web Tokens
+- **Input Validation**: Comprehensive request validation and sanitization
+- **CORS Protection**: Configured cross-origin resource sharing
 
-```
-cd my-turborepo
+## 📊 Database Schema
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+- **Users**: User accounts and authentication
+- **Websites**: Monitored websites and their configurations
+- **Validators**: Network nodes and their metadata
+- **WebsiteTicks**: Individual monitoring results and metrics
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+## 🤝 Contributing
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## 📝 License
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+## 🙏 Acknowledgments
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- Solana Foundation for blockchain infrastructure
+- Clerk for authentication services
+- Vercel for deployment platform
+- Open source community for amazing tools and libraries
